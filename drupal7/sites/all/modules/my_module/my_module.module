@@ -1,0 +1,76 @@
+<?php
+
+//Implementation hook_menu();
+
+function my_module_menu() {
+	$items = array();
+
+	$items['home-page'] = array(
+		'title' => 'Home Page',
+		'page callback' => 'my_home_page',
+		'access callback' => TRUE
+	);
+
+	$items['page-403'] = array(
+		'title' => 'HTTP 403',
+		'page callback' => 'my_forbidden_page',
+		'access callback' => TRUE
+	);
+
+	$items['page-404'] = array(
+		'title' => 'HTTP 404',
+		'page callback' => 'my_notFound_page',
+		'access callback' => TRUE
+	);
+
+	return $items;
+}
+
+function my_home_page() {
+	return t('Hello world');
+}
+
+function my_forbidden_page() {
+	return t('Forbidden');
+}
+
+function my_notFound_page() {
+	return t('Not a found');
+}
+
+//Implementation hook_block_info();
+
+function my_module_block_info() {
+	$block['hello-message'] = array(
+		'info' => t('Super block')
+	);
+
+	return $block;
+}
+
+//Implementation hook_block_view();
+
+function my_module_block_view($delta = '') {
+	$block = array();
+
+	if($delta == 'hello-message') {
+		$block['subject'] = t('Message');
+		if(user_access('adminPermission')) {
+			$block['content'] = t('Hello Block!');
+		} else {
+			$block['content'] = t('Access to view this content is denied');
+		}
+
+	}
+
+	return $block;
+}
+
+//Implementation hook_permission();
+
+function my_module_permission() {
+	return array('adminPermission' => array(
+		'title' => t('View page permission'),
+		'description' => t('View page description')
+	));
+}
