@@ -21,6 +21,28 @@ function my_theming_menu() {
 	return $items;
 }
 
+
+/*
+ * My template theme
+ * */
+
+function my_theming_theme() {
+	return array(
+		'custom_template' => array(
+			'variables' => array(
+				'body-head' => NULL,
+				'body-foot' => NULL,
+				'title' => NULL
+			),
+			//'template' => 'custom_template'
+		)
+	);
+}
+
+/*
+ * Page function
+ * */
+
 function my_theming_table() {
 
 	$table = get_theme_table();
@@ -29,7 +51,12 @@ function my_theming_table() {
 
 	$image = get_theme_image();
 
-	return "$fieldset_element" . "<br/>$image";
+	$myTheme = theme('custom_template', array(
+		'body-head' => 'Some body',
+		'body-foot' => 'Strong text',
+	));
+
+	return "$fieldset_element" . "<br/>$image" . "<br/>$myTheme";
 }
 
 /*
@@ -74,6 +101,9 @@ function get_theme_fieldset($table) {
 	return theme('fieldset', array('element' => $element));
 }
 
+/*
+ * Implementation theme_image_style();
+ */
 
 function get_theme_image() {
 
@@ -98,6 +128,16 @@ function my_theming_item_list() {
 	return theme_item_list(array('items' => $items, 'title' => $title, 'type' => $type, 'attributes' => ''));
 }
 
-function my_theming_fieldset() {
-
+function theme_custom_template($variables) {
+	$output = '<div class="custom-template-wrapper">';
+	$output .=    '<div class="body">';
+	$output .=      '<h2>';
+	$output .=			$variables['body-head'];
+	$output	.=		'</h2>';
+	$output .=      '<strong>';
+	$output .=			$variables['body-foot'];
+	$output	.=		'</strong>';
+	$output .=    '</div>';
+	$output .= '</div>';
+	return $output;
 }
