@@ -1,0 +1,103 @@
+<?php
+
+
+// Implements hook_init()
+
+function my_theming_init() {
+	drupal_add_library('system', 'drupal.collapse');
+}
+
+// Implements hook_menu()
+
+function my_theming_menu() {
+	$items = array();
+
+	$items['theme-page'] = array(
+		'title' => 'Theming Table',
+		'page callback' => 'my_theming_table',
+		'access callback' => TRUE
+	);
+
+	return $items;
+}
+
+function my_theming_table() {
+
+	$table = get_theme_table();
+
+	$fieldset_element = get_theme_fieldset($table);
+
+	$image = get_theme_image();
+
+	return "$fieldset_element" . "<br/>$image";
+}
+
+/*
+ * Implementation theme_table();
+ */
+
+function get_theme_table() {
+	$header = array(
+		array('data' => t('First header')),
+		array('data' => t('Second header')),
+		array('data' => t('Third header'))
+	);
+
+	$rows[] = array(
+		array('data' => t('First row')),
+		array('data' => t('Second row')),
+		array('data' => t('Third row'))
+	);
+
+	$rows[] = array(
+		array('data' => t('Fourth row')),
+		array('data' => t('Fifth row')),
+		array('data' => t('Sixth row'))
+	);
+
+	return theme('table', array('header' => $header, 'rows' => $rows));
+}
+
+/*
+ * Implementation theme_fieldset();
+ */
+
+function get_theme_fieldset($table) {
+	$element = array(
+		'#title' 		=> 	t('Theme fieldset'),
+		'#children' 	=> 	$table,
+		'#collapsible' 	=>	true,
+		'#collapsed'	=> 	true,
+		'#attributes'	=>	array('class' => array('collapsible', 'collapsed'))
+	);
+
+	return theme('fieldset', array('element' => $element));
+}
+
+
+function get_theme_image() {
+
+	$img = array(
+		'style_name' => 'thumbnail',
+		'path' => 'public://00423663.jpg',
+		'alt' => 'My Image',
+		'title'	=> 'The title of my image',
+
+	);
+
+	return theme('image_style', $img);
+}
+
+//Implementation theme_item_list();
+
+function my_theming_item_list() {
+	$items = array('First item','Second item', 'Third item');
+	$title = 'Theme List';
+	$type = 'ol';
+
+	return theme_item_list(array('items' => $items, 'title' => $title, 'type' => $type, 'attributes' => ''));
+}
+
+function my_theming_fieldset() {
+
+}
