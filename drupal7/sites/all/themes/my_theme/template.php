@@ -2,21 +2,21 @@
 // $Id: template.php,v 1.1.2.6.4.2 2011/01/11 01:08:49 dvessel Exp $
 
 /**
- * The default group for NineSixty framework CSS files added to the page.
+ * The default group for my_theme framework CSS files added to the page.
  */
 define('CSS_NS_FRAMEWORK', -200);
 
 /**
  * Implements hook_preprocess_html
  */
-function ninesixty_preprocess_html(&$vars) {
+function my_theme_preprocess_html(&$vars) {
   $vars['classes_array'][] = 'show-grid';
 }
 
 /**
  * Preprocessor for page.tpl.php template file.
  */
-function ninesixty_preprocess_page(&$vars, $hook) {
+function my_theme_preprocess_page(&$vars, $hook) {
 
   // For easy printing of variables.
   $vars['logo_img'] = '';
@@ -130,9 +130,9 @@ function ns() {
  *
  * Sub-themes can override the framework styles when it contains css files with
  * the same name as a framework style. This mirrors the behavior of the 6--1
- * release of NineSixty warts and all. Future versions will make this obsolete.
+ * release of my_theme warts and all. Future versions will make this obsolete.
  */
-function ninesixty_css_alter(&$css) {
+function my_theme_css_alter(&$css) {
   global $theme_info, $base_theme_info;
 
   // Dig into the framework .info data.

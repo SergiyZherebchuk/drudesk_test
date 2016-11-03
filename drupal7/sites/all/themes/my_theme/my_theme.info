@@ -1,4 +1,4 @@
-; $Id: ninesixty.info,v 1.1.2.5.4.2 2011/01/11 01:08:49 dvessel Exp $
+; $Id: my_theme.info,v 1.1.2.5.4.2 2011/01/11 01:08:49 dvessel Exp $
 
 name = My Theme
 description = A blank base theme using the 960 Grid System. See the "README.txt" file within the theme folder for more information.

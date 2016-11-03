@@ -136,7 +136,6 @@ function my_theming_item_list() {
 	return theme_item_list(array('items' => $items, 'title' => $title, 'type' => $type, 'attributes' => ''));
 }
 
-
 function theme_custom_template($variables) {
 	$output = '<div class="custom-template-wrapper">';
 	$output .=    '<div class="body">';
