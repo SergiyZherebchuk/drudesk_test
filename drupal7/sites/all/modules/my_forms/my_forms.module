@@ -39,14 +39,14 @@ function contacts_form($form, $form_state) {
 
 	$form['username'] = array(
 		'#type' 		=> 	'textfield',
-		'#title' 		=> 	t('Username(*)'),
+		'#title' 		=> 	t('Username'),
 		'#required' 	=> 	TRUE,
 		'#maxlength'	=>	30
 	);
 
 	$form['email'] = array(
 		'#type' 		=> 	'textfield',
-		'#title' 		=> 	t('Email(*)'),
+		'#title' 		=> 	t('Email'),
 		'#required' 	=>	TRUE
 	);
 
@@ -76,13 +76,13 @@ function contacts_form($form, $form_state) {
 
 	$form['message'] = array(
 		'#type' 	=> 	'textarea',
-		'#title' 	=> 	t('Message(*)'),
+		'#title' 	=> 	t('Message'),
 		'#required' => TRUE,
 	);
 
 	$form['type'] = array(
 		'#type' 	=> 	'checkboxes',
-		'#title' 	=> 	t('Type(*)'),
+		'#title' 	=> 	t('Type'),
 		'#required' => TRUE,
 		'#options'	=> array(
 			'responce'	=>  t('Responce'),
