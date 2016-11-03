@@ -1,0 +1,160 @@
+<?php
+
+// Implements hook_menu()
+
+function my_forms_menu() {
+	$items = array();
+
+	$items['contacts'] = array(
+		'title' => 'Contacts',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('contacts_form'),
+		'access callback' => TRUE
+	);
+
+	return $items;
+}
+
+/*
+ * Implements contacts_form();
+ * */
+
+function contacts_form($form, $form_state) {
+	$form = array();
+
+	$form['contact'] = array(
+		'#type' 	=> 	'fieldset',
+		'#title' 	=> 	t('My Contacts')
+	);
+
+	$form['name'] = array(
+		'#type' 	=> 	'textfield',
+		'#title' 	=> 	t('First name')
+	);
+
+	$form['surname'] = array(
+		'#type' 	=> 	'textfield',
+		'#title' 	=> 	t('Last name')
+	);
+
+	$form['username'] = array(
+		'#type' 		=> 	'textfield',
+		'#title' 		=> 	t('Username(*)'),
+		'#required' 	=> 	TRUE,
+		'#maxlength'	=>	30
+	);
+
+	$form['email'] = array(
+		'#type' 		=> 	'textfield',
+		'#title' 		=> 	t('Email(*)'),
+		'#required' 	=>	TRUE
+	);
+
+	$form['telephone'] = array(
+		'#type' 	=> 	'textfield',
+		'#title' 	=> 	t('Telephone')
+	);
+
+	$form['sex'] = array(
+		'#type' 	=> 	'radios',
+		'#title' 	=> 	t('Sex'),
+		'#options'	=> array(
+			'male' 		=>	t('Male'),
+			'female'	=>	t('Female')
+		)
+	);
+
+	$form['country'] = array(
+		'#type' 	=> 	'select',
+		'#title' 	=> 	t('Country'),
+		'#options'	=>	array(
+			'Ukraine' 	=>	'Ukraine',
+			'Russia'	=>	'Russia',
+			'USA'		=>	'USA'
+		)
+	);
+
+	$form['message'] = array(
+		'#type' 	=> 	'textarea',
+		'#title' 	=> 	t('Message(*)'),
+		'#required' => TRUE,
+	);
+
+	$form['type'] = array(
+		'#type' 	=> 	'checkboxes',
+		'#title' 	=> 	t('Type(*)'),
+		'#required' => TRUE,
+		'#options'	=> array(
+			'responce'	=>  t('Responce'),
+			'review'	=>	t('Review')
+		)
+	);
+
+	$form['submit'] = array(
+		'#type' 	=>	'submit',
+		'#value'	=> 	t('Submit')
+	);
+
+
+	return $form;
+}
+
+/*
+ * Implements form_validate();
+ * */
+
+function contacts_form_validate($form, &$form_state) {
+	$valid_username = $form_state['values']['username'];
+	$valid_email = $form_state['values']['email'];
+
+	if(!preg_match('/^[a-zA-Z0-9_]{5,20}/', $valid_username)) {
+		form_set_error('username', t('Username length should be 5 to 20 characters and consist of letters of the alphabet'));
+	}
+
+	if (!valid_email_address($valid_email)) {
+		form_set_error('email', t('Sorry. Your email address,' . $valid_email . ', is not valid. Please submit a valid E-mail address.'));
+	}
+}
+
+
+/*
+ * Implements form_submit();
+ * */
+function contacts_form_submit($form, &$form_state) {
+	$contacts = '';
+
+	if(!empty($form_state['values']['name'])) {
+		$contacts 	.= 	'First name: ' . $form_state['values']['name'] . '<br/>';
+	}
+
+	if(!empty($form_state['values']['surname'])) {
+		$contacts 	.= 	'Last name: ' . $form_state['values']['surname'] . '<br/>';
+	}
+
+	$contacts 	.= 	'Username: ' . $form_state['values']['username'] . '<br/>';
+	$contacts	.= 	'Email: ' . $form_state['values']['email'] . '<br/>';
+
+	if(!empty($form_state['values']['telephone'])) {
+		$contacts 	.= 	'Telephone: ' . $form_state['values']['telephone'] . '<br/>';
+	}
+
+	if(!empty($form_state['values']['sex'])) {
+		$contacts 	.= 	'Sex: ' . $form_state['values']['sex'] . '<br/>';
+	}
+
+	if(!empty($form_state['values']['country'])) {
+		$contacts 	.= 	'Country: ' . $form_state['values']['country'] . '<br/>';
+	}
+
+	$type = $form_state['values']['type'];
+
+	$contacts 	.=	'Message: ' . $form_state['values']['message'] . '<br/>';
+
+	$contacts	.=	'Type(-s): ';
+
+	foreach ($type as $item) {
+		$contacts	.=	"$item ";
+	};
+
+	drupal_set_message(t("$contacts"));
+}
