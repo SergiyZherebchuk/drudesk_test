@@ -52,11 +52,19 @@ function my_theming_table() {
 	$image = get_theme_image();
 
 	$myTheme = theme('custom_template', array(
-		'body-head' => 'Some body',
-		'body-foot' => 'Strong text',
+		'body-head' => t('Some body'),
+		'body-foot' => t('Strong text')
 	));
 
 	return "$fieldset_element" . "<br/>$image" . "<br/>$myTheme";
+}
+
+/*
+ * Implements  template_preprocess_page
+ * */
+
+function my_theming_preprocess_page (&$variables) {
+	$variables['title'] = 'Example template_preprocess_page';
 }
 
 /*
@@ -128,7 +136,7 @@ function my_theming_item_list() {
 	return theme_item_list(array('items' => $items, 'title' => $title, 'type' => $type, 'attributes' => ''));
 }
 
-/*
+
 function theme_custom_template($variables) {
 	$output = '<div class="custom-template-wrapper">';
 	$output .=    '<div class="body">';
@@ -142,4 +150,3 @@ function theme_custom_template($variables) {
 	$output .= '</div>';
 	return $output;
 }
-*/
