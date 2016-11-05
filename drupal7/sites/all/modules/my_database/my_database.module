@@ -11,7 +11,7 @@ function my_database_menu() {
         'title'             =>  'Add data',
         'page callback'     =>  'drupal_get_form',
         'page arguments'    =>  array('add_form'),
-        'access callback'   =>  array('TRUE')
+        'access callback'   =>  TRUE
     );
 
     $items['table'] = array(
@@ -25,6 +25,14 @@ function my_database_menu() {
         'title argument'    =>  array(1),
         'page callback'     =>  'drupal_get_form',
         'page arguments'    =>  array('db_update_form', 1),
+        'access arguments'  =>  array('TRUE')
+    );
+
+    $items['delete/%'] = array(
+        'title callback'    =>  'db_delete_title',
+        'title argument'    =>  array(1),
+        'page callback'     =>  'drupal_get_form',
+        'page arguments'    =>  array('db_delete_form', 1),
         'access arguments'  =>  array('TRUE')
     );
 
@@ -97,7 +105,7 @@ function add_form_submit($form, &$form_state) {
 }
 
 /*
- * Implements db_data_page();
+ * Implements db_data_page(); Table implements
  * */
 
 function db_data_page() {
@@ -113,7 +121,8 @@ function db_data_page() {
             $value['number'],
             $value['teaser'],
             $value['text'],
-            l(t('Update'), "/update/{$value['id']}")
+            l(t('Update'), "/update/{$value['id']}") . '<br/>' .
+            l(t('Delete'), "/delete/{$value['id']}")
         );
     }
 
@@ -195,4 +204,31 @@ function db_update_form($form, $form_state) {
     $form['#validate'][] = 'add_form_validate';
 
     return $form;
+}
+
+/*
+ * Implements update form submit();
+ * */
+
+function db_update_form_submit($form, &$form_state) {
+    $id = $form_state['build_info']['args'][0];
+    $values = $form_state['values'];
+
+    $query = db_update('custom_table')
+        ->fields(array(
+            'number'    => $values['number'],
+            'teaser'    => $values['teaser'],
+            'text'      => $values['text'],
+        ))
+        ->condition('id', $id)
+        ->execute();
+
+    if ($query) {
+        drupal_set_message(t('Data successfully updated'));
+    }
+    else {
+        drupal_set_message(t('Data is not updated'), 'warning');
+    }
+
+    $form_state['redirect'] = 'table';
 }
