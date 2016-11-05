@@ -11,13 +11,21 @@ function my_database_menu() {
         'title'             =>  'Add data',
         'page callback'     =>  'drupal_get_form',
         'page arguments'    =>  array('add_form'),
-        'access callback'   =>  TRUE
+        'access callback'   =>  array('TRUE')
     );
 
     $items['table'] = array(
         'title'             =>  'Data table',
         'page callback'     =>  'db_data_page',
-        'access arguments'  =>  TRUE
+        'access arguments'  =>  array('TRUE')
+    );
+
+    $items['update/%'] = array(
+        'title callback'    =>  'db_update_title',
+        'title argument'    =>  array(1),
+        'page callback'     =>  'drupal_get_form',
+        'page arguments'    =>  array('db_update_form', 1),
+        'access arguments'  =>  array('TRUE')
     );
 
     return $items;
@@ -89,11 +97,11 @@ function add_form_submit($form, &$form_state) {
 }
 
 /*
- *
+ * Implements db_data_page();
  * */
 
 function db_data_page() {
-    $head = array(t('Id'), t('Number'), t('Teaser'), t('Text'));
+    $head = array(t('Id'), t('Number'), t('Teaser'), t('Text'), t('Action'));
     $row = array();
     $query = db_select('custom_table', 't')
         ->fields('t', array('id', 'number', 'teaser', 'text'))
@@ -104,9 +112,87 @@ function db_data_page() {
             $value['id'],
             $value['number'],
             $value['teaser'],
-            $value['text']
+            $value['text'],
+            l(t('Update'), "/update/{$value['id']}")
         );
     }
 
     return theme('table', array('header' => $head, 'rows' => $row));
+}
+
+/*
+ * Implement update title
+ * */
+
+function db_update_title($id) {
+    $my_id = array(':id' => $id);
+    $number = db_query("SELECT 'number' FROM {custom_table} WHERE 'id' = ':id'", $my_id)->fetchField();
+
+    if($number) {
+        return t('Edit element by "@number"', array('@number' => $number));
+    } else {
+        return t('Not a found this element');
+    }
+}
+
+/*
+ * Implement update_form();
+ * */
+
+function db_update_form($form, $form_state) {
+    $form = array();
+    $id = $form_state['build_info']['args'][0];
+
+    $data = db_select('custom_table', 't')
+        ->condition('t.id', $id)
+        ->fields('t')
+        ->execute()
+        ->fetchAssoc();
+
+    if(empty($data) || empty($data['number'])) {
+        $placeholder = array(
+            '@id'   =>  $id,
+            '!back' =>  l(t('Go back'), '')
+        );
+    }
+
+    $form['number'] = array(
+        '#title'        =>  t('Number'),
+        '#type'         =>  'textfield',
+        '#maxlength'    =>  10,
+        '#required'     =>  TRUE,
+        '#default_value'=>  $data['number']
+    );
+
+    $form['teaser'] = array(
+        '#title'        =>  t('Teaser'),
+        '#type'         =>  'textfield',
+        '#maxlength'    =>  150,
+        '#required'     =>  TRUE,
+        '#default_value'=>  $data['teaser']
+    );
+
+    $form['text'] = array(
+        '#title'    =>  t('Text'),
+        '#type'     =>  'textarea',
+        '#required' =>  TRUE,
+        '#default_value'=>  $data['text']
+    );
+
+    $form['actions'] = array(
+        '#type' =>  'actions'
+    );
+
+    $form['actions']['submit'] = array(
+        '#type'     =>  'submit',
+        '#value'    =>  t('Submit')
+    );
+
+    $form['actions']['cancel'] = array(
+        '#markup'   =>  l(t('Cancel'), 'table')
+    );
+
+    $form['#validate'][] = 'add_form_validate';
+
+    return $form;
 }
